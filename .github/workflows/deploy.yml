@@ -101,7 +101,7 @@ jobs:
       uses: WyriHaximus/github-action-helm3@v4.0.1
       with:
         exec: |
-          helm upgrade --install --set env=dev --set imageTag: us-central1-docker.pkg.dev/test-snwbr/ingenio/nodeapp:${{ github.run_id }}-dev --values=k8s/charts/hello-world/values.yaml hello-world k8s/charts/hello-world
+          helm upgrade --install --set env=dev --set imageTag=us-central1-docker.pkg.dev/test-snwbr/ingenio/nodeapp:${{ github.run_id }}-dev --values=k8s/charts/hello-world/values.yaml hello-world k8s/charts/hello-world
 
     - name: 'Setup PROD GKE'
       if: github.ref == 'refs/heads/main'
@@ -112,4 +112,4 @@ jobs:
       uses: WyriHaximus/github-action-helm3@v4.0.1
       with:
         exec: |
-          helm upgrade --install --set env=prod --set imageTag: us-central1-docker.pkg.dev/test-snwbr/ingenio/nodeapp:${{ github.run_id }} --values=k8s/charts/hello-world/values.yaml hello-world k8s/charts/hello-world
+          helm upgrade --install --set env=prod --set imageTag=us-central1-docker.pkg.dev/test-snwbr/ingenio/nodeapp:${{ github.run_id }} --values=k8s/charts/hello-world/values.yaml hello-world k8s/charts/hello-world
