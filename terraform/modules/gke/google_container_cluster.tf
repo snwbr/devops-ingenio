@@ -34,24 +34,6 @@ resource "google_container_cluster" "primary" {
   master_authorized_networks_config {
   }
 
-  dynamic "cluster_autoscaling" {
-    for_each = var.cluster_autoscaling_enabled == true ? [1] : []
-    content {
-      enabled = var.cluster_autoscaling_enabled
-      resource_limits {
-        resource_type = "cpu"
-        maximum       = 4
-      }
-      resource_limits {
-        resource_type = "memory"
-        maximum       = 8
-      }
-      auto_provisioning_defaults {
-        disk_size = 50
-      }
-    }
-  }
-
   cluster_autoscaling {
     enabled = var.cluster_autoscaling_enabled
     dynamic "resource_limits" {
