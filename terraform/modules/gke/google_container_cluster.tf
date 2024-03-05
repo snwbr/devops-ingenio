@@ -6,8 +6,9 @@ resource "google_container_cluster" "primary" {
   project            = var.project
   min_master_version = var.gke_version
 
-  network    = var.vpc_network
-  subnetwork = var.subnetwork_vpc_name
+  deletion_protection = var.deletion_protection
+  network             = var.vpc_network
+  subnetwork          = var.subnetwork_vpc_name
 
   master_auth {
     client_certificate_config {
