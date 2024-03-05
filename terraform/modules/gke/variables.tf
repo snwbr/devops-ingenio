@@ -42,6 +42,11 @@ variable "cluster_autoscaling_enabled" {
   default = false
 }
 
+variable "deletion_protection" {
+  type = bool
+  default = false
+}
+
 variable "oauth_scopes" {
   type = list(string)
   default = [
