@@ -96,31 +96,20 @@ jobs:
       if: github.ref == 'refs/heads/develop'
       run: 'gcloud container clusters get-credentials dev-gke --zone us-central1-c --project test-snwbr'
     
-    - name: 'Deploy'
+    - name: "Helm deploy to DEV"
       if: github.ref == 'refs/heads/develop'
-      uses: 'deliverybot/helm@v1'
+      uses: WyriHaximus/github-action-helm3@v4.0.1
       with:
-        release: 'hello-world'
-        namespace: 'apps'
-        chart: 'k8s/charts/hello-world'
-        value-files: "k8s/charts/hello-world/values.yaml"
-        values: |
-          env: dev
-          imageTag: us-central1-docker.pkg.dev/test-snwbr/ingenio/nodeapp:${{ github.run_id }}-dev
+        exec: |
+          helm upgrade --install --set env=dev --set imageTag: us-central1-docker.pkg.dev/test-snwbr/ingenio/nodeapp:${{ github.run_id }}-dev --values=k8s/charts/hello-world/values.yaml hello-world k8s/charts/hello-world
 
     - name: 'Setup PROD GKE'
       if: github.ref == 'refs/heads/main'
       run: 'gcloud container clusters get-credentials prod-gke --region us-central1 --project test-snwbr'
     
-    - name: 'Deploy'
+    - name: "Helm deploy to PROD"
       if: github.ref == 'refs/heads/main'
-      uses: 'deliverybot/helm@v1'
+      uses: WyriHaximus/github-action-helm3@v4.0.1
       with:
-        release: 'hello-world'
-        namespace: 'apps'
-        chart: 'k8s/charts/hello-world'
-        value-files: "k8s/charts/hello-world/values.yaml"
-        values: |
-          env: prod
-          imageTag: us-central1-docker.pkg.dev/test-snwbr/ingenio/nodeapp:${{ github.run_id }}
-
+        exec: |
+          helm upgrade --install --set env=prod --set imageTag: us-central1-docker.pkg.dev/test-snwbr/ingenio/nodeapp:${{ github.run_id }} --values=k8s/charts/hello-world/values.yaml hello-world k8s/charts/hello-world
