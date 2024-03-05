@@ -6,9 +6,6 @@ on:
       - 'main'
     paths:
       - 'src/**'
-  pull_request:
-    paths:
-      - 'src/**'
   workflow_dispatch:
 
 
@@ -37,6 +34,8 @@ jobs:
       with:
         credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
 
+    ## Setting up repositories
+
     - name: 'Set up Cloud SDK'
       uses: 'google-github-actions/setup-gcloud@v2'
 
@@ -56,6 +55,8 @@ jobs:
         username: _json_key
         password: ${{ secrets.GOOGLE_CREDENTIALS }}
 
+    ## Image creation
+
     - name: Build and push
       uses: docker/build-push-action@v5
       with:
@@ -65,3 +66,14 @@ jobs:
         tags: |
           us-central1-docker.pkg.dev/test-snwbr/ingenio/nodeapp:${{ github.run_id }}
           us-central1-docker.pkg.dev/test-snwbr/ingenio/nodeapp:latest
+
+    ## Setting up kubernetes
+
+    - name: 'Install kubectl'
+      run: gcloud components install kubectl
+
+    - name: 'Setup DEV GKE'
+      run: 'gcloud container clusters get-credentials dev-gke --zone us-central1-c --project test-snwbr'
+    
+
+
