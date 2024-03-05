@@ -1,0 +1,67 @@
+name: 'Terraform'
+
+on:
+  push:
+    branches: [ $default-branch ]
+    paths:
+      - 'terraform'
+  pull_request:
+    paths:
+      - 'terraform'
+
+permissions:
+  contents: read
+
+jobs:
+  terraform:
+    name: 'Terraform Infra'
+    runs-on: ubuntu-latest
+    environment: dev
+
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+        #Inform a working directory if .tf files are not in root folder
+        working-directory: ./terraform/infra/ingenio/
+
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+
+    # Checks that all Terraform configuration files adhere to a canonical format
+    - name: Terraform Format
+      run: terraform fmt -check
+
+    # Generates an execution plan for Terraform in dev
+    - name: Terraform Plan (DEV)
+      run: ./tf.sh dev plan -input=false
+      env:
+        GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+
+    # Generates an execution plan for Terraform in prod
+    - name: Terraform Plan (PROD)
+      run: ./tf.sh dev plan -input=false
+      env:
+        GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+
+      # On push to $default-branch, build or change infrastructure according to Terraform configuration files
+      # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
+    - name: Terraform Apply (DEV)
+      if: github.ref == 'refs/heads/$default-branch' && github.event_name == 'push'
+      run: ./tf.sh dev plan -input=false -auto-approve
+      env:
+        GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+
+      # On push to $default-branch, build or change infrastructure according to Terraform configuration files
+      # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
+    - name: Terraform Apply (PROD)
+      if: github.ref == 'refs/heads/$default-branch' && github.event_name == 'push'
+      run: ./tf.sh prod plan -input=false -auto-approve
+      env:
+        GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
