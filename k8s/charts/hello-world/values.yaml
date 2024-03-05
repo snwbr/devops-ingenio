@@ -5,3 +5,4 @@ imageName: "nodeapp"
 imageTag: "latest"
 containerPort: 3000
 port: 80
+namespace: apps
