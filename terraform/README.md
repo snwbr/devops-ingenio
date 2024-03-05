@@ -93,3 +93,8 @@ There are infinite ways to organize the Terraform code, some of them are more pa
 In the `infra` folder, there is a `tfvars` folder with different `tfvars` there that specifies the different configurations based on the environment one's working with. At the moment of writing, the only environments are `dev` and `prod`. The creation of the `tf.sh` scripts aims to solve the passing of the `tfvars` file depending on the environment, to avoid putting `-var-file=dev.tfvars` everytime one plans, and it also gives room for more terraform commands' customization, such as setting environment variables, remote backends (and use dynamic backends) and more once in the script, without having to specify them everytime one run `terraform` comands.
 
 For the environments state file setup, I choosed to have separate files for `dev` and `prod` in the path [terraform/infra/ingenio/backends](terraform/infra/ingenio/backends)
+
+## CI/CD
+This terraform code is using Github Actions to trigger the infra deployments, as seen here:
+
+https://github.com/snwbr/devops-ingenio/actions/workflows/terraform.yml
