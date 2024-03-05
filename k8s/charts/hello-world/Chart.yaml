@@ -1,0 +1,4 @@
+apiVersion: v1
+name: hello-world
+version: 1.0
+description: NodeJS App for Ingenio
