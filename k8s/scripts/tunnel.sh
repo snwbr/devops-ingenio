@@ -26,7 +26,9 @@ node_info=$(gcloud compute instances list | grep $cluster_name | head -n 1)
 tunnel_node=$(echo "${node_info}" | awk '{print $1}')
 tunnel_zone=$(echo "${node_info}" | awk '{print $2}')
 
-sed "s~${server}~${local_tunnel_url}~g" $kubectl_location | tee $kubectl_location
+mv $kubectl_location "${kubectl_location}-bk"
+sed -u "s~${server}~${local_tunnel_url}~g;w $kubectl_location" "${kubectl_location}-bk"
+
 cat /etc/hosts | grep kubernetes.default || echo "127.0.0.1 kubernetes kubernetes.default" | sudo tee -a /etc/hosts
 
 gcloud compute ssh \

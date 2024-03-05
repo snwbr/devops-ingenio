@@ -1,6 +1,0 @@
-resources:
-- basic-auth-secret.yaml
-- basic-auth.yaml
-- certificate.yaml
-
-namespace: services

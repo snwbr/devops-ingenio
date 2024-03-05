@@ -16,7 +16,7 @@
 This repo contains the necessary code to deploy the Ingenio DevOps test, which encourages people to use best practices to deploy an application to an environment that's fully automated, scalable, high available and reliable.
 
 **Notes:** 
-- Due to the ammount of testing done, using the real Let'sEncrypt server, domain snwbr.net got blocked a couple of times. At the time of reading, sites such as https://snwbr.net/ may present you an invalid cert, that if you check using Chrome, it will show you it's not invalid, but using Let'sEncrypt staging servers (which is the one should be used for development purposes). Real certificates can be enabled by changing `name: ingress-staging` to `name: ingress` in file [certificate.yaml](k8s/services/traefik/base/certificate.yaml), commit, push to `main` and it will be applied by GitHub Actions.
+- Due to the ammount of testing done, using the real Let'sEncrypt server, domain snwbr.net got blocked a couple of times. At the time of reading, sites such as https://snwbr.net/ may present you an invalid cert, that if you check using Chrome, it will show you it's not invalid, but using Let'sEncrypt staging servers (which is the one should be used for development purposes). Real certificates can be enabled by changing `name: ingress-staging` to `name: ingress` in the ingress controller's [issuers](k8s/charts/hello-world/templates/ingress.yaml), commit, push to `main` and it will be applied by GitHub Actions.
 - **IMPORTANT**: In order to avoid costs associated with having GKE and instances running up, I destroyed the GKE cluster. It can be easily put it back with all the stack in minutes. Please create a [Github issue](https://github.com/snwbr/gl-test/issues/new) saying you want the environment up and I'll create it as soon as I see the issue and reply it back when's done.
 
 ## Architecture
@@ -27,7 +27,7 @@ This repo contains the necessary code to deploy the Ingenio DevOps test, which e
 - CI/CD: Github Actions
 - K8s teamplating: kustomize
 - K8s installation manager: Helm
-- Reverse proxy, routing, service discovery and TLS termination: Traefik
+- Reverse proxy, routing, service discovery and TLS termination: GCE (for quickness, but I don't like it honestly)
 - K8s CNI: Calico
 - Certificates management: Cert-manager
 - Domain provider: Google Domains
@@ -47,12 +47,11 @@ During this challenge, Google Kubernetes Enginer (GKE) was chosen. The configura
 - Private cluster, with no direct access to internet (no node has public IP).
 - Node autoscaling is enabled in prod, for High Availability. It is disabled in dev due to costs.
 - Terraform-managed nodepool.
-- Ingress is served through Traefik with Custom Resource Definitions (CRDs).
-- One Traefik service using a public IP through a LoadBalancer K8s service which is the only source of access to K8s services.
+- Ingress is served through default GCE.
+- One single service using a public IP through a LoadBalancer K8s service which is the only source of access to K8s services.
 - Internet access is provider at VPC level through a Router using NAT.
 - SSL Certificates for the application are managed through cert-manager, auto-renewing when needed.
 - Services and pods interconnections is done through internal routing and DNS.
-- Addition of Horizontal Pod Autoscaling to Traefik to support high loads.
 
 ## Continuous Integration & Continuous Deployment
 
@@ -82,3 +81,4 @@ To stick to the challenge request and deliver it on time, a good ammount of good
 - Creation of granular RBAC rules through all the tools and processes.
 - Add more testing (unit, integration, contract, E2E, regression, performance/stress, smoke, etc).
 - Use of tools like terragrunt for managing multiple environments.
+- Use of Cillium for eBPF enhanced traceability and service mesh, or at least some router like Traefik.

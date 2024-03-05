@@ -1,7 +1,7 @@
 # K8s code
 ## Overview
 
-This code serves as the K8s objects main source. It contains all the templates for deploying the applications, alongisde the key components for the cluster to work successfully (i.e. cert-manager, traefik, deployments, services, etc).
+This code serves as the K8s objects main source. It contains all the templates for deploying the applications, alongisde the key components for the cluster to work successfully (i.e. cert-manager, sealedsecrets, deployments, services, etc).
 
 Since GKE clusters are private, you cannot directly access the control plane's IP or the kube API. Instead, you need to use a bastion/jump host/proxy to achieve a connection from your machine. To do so, there is a helper script called [tunnel.sh](scripts/tunnel.sh), just call it `./scripts/tunnel.sh` and it will do the following steps:
 
@@ -69,27 +69,15 @@ Yet another way to do templating. There is also Helm, for example. For the chall
 
 For more complex environments and situations, Helm or jsonnet may be used as well, although kustomize is still pretty powerful.
 
-For traefik install, for instance, we're using Helm, in order to serve as a Helm first-glance or proof of how to use it. Helm can be installed with:
-
 ```
 cd scripts
 ./get_helm.sh
 ```
 
-After installation, you can install traefik like this:
+After installation, you can install the app like this:
 
 ```
-helm repo add traefik https://helm.traefik.io/traefik
-helm install --version v23.2.0 \
---namespace=services \
---values=services/traefik/helm_values.yaml \
-traefik traefik/traefik
-```
-
-Taefik dashboard can be accessed via a `kubectl port-forward`. This is done on purpose, for security reasons the Dashbord SHOULD NOT be publically exposed:
-
-```
-kubectl port-forward -n services deployment/traefik 9000:9000
+helm upgrade --install  --set env=[environment] --values=k8s/charts/hello-world/values.yaml hello-world k8s/charts/hello-world
 ```
 
 ## Secrets management

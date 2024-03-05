@@ -1,4 +1,3 @@
 resources:
 - cert-manager/base
-- traefik/base
 - sealedsecrets/base

@@ -1,0 +1,35 @@
+# secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Values.appName }}-ssl
+  namespace: {{ .Values.namespace }}
+type: kubernetes.io/tls
+stringData:
+  tls.key: ""
+  tls.crt: ""
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.appName }}
+  namespace: {{ .Values.namespace }}
+  annotations:
+    kubernetes.io/ingress.class: gce
+    kubernetes.io/ingress.allow-http: "true"
+    kubernetes.io/ingress.global-static-ip-name: {{ .Values.env }}-traefik-lb
+    cert-manager.io/clusterissuer: ingress-staging
+spec:
+  defaultBackend:
+    service:
+      name: {{ .Values.appName }}
+      port:
+        number: {{ .Values.port }}
+  tls:
+    - secretName: {{ .Values.appName }}-ssl
+      hosts:
+      {{ if eq .Values.env "prod" }}
+        - snwbr.net
+      {{ else }}
+        - {{ .Values.env }}.snwbr.net
+      {{ end }}
