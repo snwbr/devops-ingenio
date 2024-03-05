@@ -3,7 +3,7 @@
 
 This code serves as the IaC main source. It will spin up resources, GCP project's configurations, necessary VPC, subnets, routers, NAT, etc. Code also contains the definition of the GKE cluster used to deploy the apps.
 
-You need a valid `terraform-sa.json` in this folder (next to the README) containing a valid GCP service account. TODO: in real environments, one posibility for handling this file's location should be set as an environment variable and the contents be managed through the secrets management tool of chosing.
+You need a valid GCP service account key. In real environments, one posibility for handling this file's location should be set as an environment variable and the contents be managed through the secrets management tool of chosing, but for this scenario it's OK to have it somewhere locally and specify the environment variable `GOOGLE_CREDENTIALS` with the location of this key.
 
 ## Prerequisites
 
@@ -91,3 +91,5 @@ Where:
 There are infinite ways to organize the Terraform code, some of them are more painful than others. For the challenge, I chose to create one `infra` folder and one `modules` folder (modules also could be separated in a different git repo for isolated testing) with the hope of split and reuse the resources in different environments. Such environments may reside in the `infra` folder, currently the only infra folder is `ingenio`. This `infra` folder could also be renamed or seen as products, services, resources, tiers, etc, depending on how big or complex is the codebase and the requirement.
 
 In the `infra` folder, there is a `tfvars` folder with different `tfvars` there that specifies the different configurations based on the environment one's working with. At the moment of writing, the only environments are `dev` and `prod`. The creation of the `tf.sh` scripts aims to solve the passing of the `tfvars` file depending on the environment, to avoid putting `-var-file=dev.tfvars` everytime one plans, and it also gives room for more terraform commands' customization, such as setting environment variables, remote backends (and use dynamic backends) and more once in the script, without having to specify them everytime one run `terraform` comands.
+
+For the environments state file setup, I choosed to have separate files for `dev` and `prod` in the path (terraform/infra/ingenio/backends)[terraform/infra/ingenio/backends]
