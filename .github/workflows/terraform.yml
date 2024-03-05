@@ -59,7 +59,7 @@ jobs:
       # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
     - name: Terraform Apply (DEV)
       if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-      run: ./tf.sh dev plan -input=false -auto-approve=true
+      run: ./tf.sh dev plan -auto-approve
       env:
         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
 
@@ -67,6 +67,6 @@ jobs:
       # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
     - name: Terraform Apply (PROD)
       if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-      run: ./tf.sh prod plan -input=false -auto-approve=true
+      run: ./tf.sh prod plan -auto-approve
       env:
         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
