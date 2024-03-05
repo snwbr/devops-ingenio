@@ -4,10 +4,10 @@ on:
   push:
     branches: [ $default-branch ]
     paths:
-      - 'terraform'
+      - 'terraform/**'
   pull_request:
     paths:
-      - 'terraform'
+      - 'terraform/**'
 
 permissions:
   contents: read
