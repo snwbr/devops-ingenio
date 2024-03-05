@@ -1,0 +1,67 @@
+name: 'Node App CI/CD'
+
+on:
+  push:
+    branches: 
+      - 'main'
+    paths:
+      - 'src/**'
+  pull_request:
+    paths:
+      - 'src/**'
+  workflow_dispatch:
+
+
+permissions:
+  contents: read
+
+jobs:
+  deploy_code:
+    name: 'Build and test'
+    runs-on: ubuntu-latest
+    environment: dev
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./src/
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    ## Code quality and build
+
+    - run: npm test
+
+    - id: 'auth'
+      uses: 'google-github-actions/auth@v2'
+      with:
+        credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
+
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v2'
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: 'Setup GC Artifact Registry'
+      run: 'gcloud auth configure-docker us-central1-docker.pkg.dev'
+
+    - name: Login to GC Artifact Registry
+      uses: docker/login-action@v3
+      with:
+        registry: us-central1-docker.pkg.dev
+        username: _json_key
+        password: ${{ secrets.GOOGLE_CREDENTIALS }}
+
+    - name: Build and push
+      uses: docker/build-push-action@v5
+      with:
+        context: ./src/
+        platforms: linux/amd64
+        push: true
+        tags: |
+          us-central1-docker.pkg.dev/test-snwbr/ingenio/nodeapp:${{ github.run_id }}
+          us-central1-docker.pkg.dev/test-snwbr/ingenio/nodeapp:latest
