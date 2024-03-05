@@ -17,7 +17,7 @@ permissions:
 
 jobs:
   deploy_code:
-    name: 'Terraform Infra'
+    name: 'Build and test'
     runs-on: ubuntu-latest
     environment: dev
     defaults:
