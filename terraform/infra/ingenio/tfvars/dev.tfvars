@@ -28,7 +28,7 @@ cluster_initial_node_count = 2
 cluster_name               = "ingenio-challenge"
 gke_version                = "1.27.8-gke.1067004"
 machine_type               = "e2-small"
-gke_tags                   = []
+gke_tags                   = ["dev"]
 
 ## IAP
 iap_members = [
