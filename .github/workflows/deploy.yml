@@ -96,6 +96,13 @@ jobs:
       if: github.ref == 'refs/heads/develop'
       run: 'gcloud container clusters get-credentials dev-gke --zone us-central1-c --project test-snwbr'
     
+    - run: ./tunnel.sh
+      name: IAP Tunnel for deploying to private clusters - DEV
+      working-directory: ./k8s/scripts
+      env:
+        ZONE: us-central1-c
+        PORT: 8444
+    
     - name: "Helm deploy to DEV"
       if: github.ref == 'refs/heads/develop'
       uses: WyriHaximus/github-action-helm3@v4.0.1
@@ -106,7 +113,13 @@ jobs:
     - name: 'Setup PROD GKE'
       if: github.ref == 'refs/heads/main'
       run: 'gcloud container clusters get-credentials prod-gke --region us-central1 --project test-snwbr'
-    
+
+    - run: ./tunnel.sh
+      name: IAP Tunnel for deploying to private clusters - PROD
+      working-directory: ./k8s/scripts
+      env:
+        PORT: 8443
+
     - name: "Helm deploy to PROD"
       if: github.ref == 'refs/heads/main'
       uses: WyriHaximus/github-action-helm3@v4.0.1
