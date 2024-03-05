@@ -1,7 +1,9 @@
 module "gke" {
-  source                        = "../../modules/gke"
-  create                        = var.gke_create
-  project                       = var.project
+  source  = "../../modules/gke"
+  create  = var.gke_create
+  project = var.project
+  # using a zone for dev instead because it's too expensive to make it regional, but for prod it would be regional
+  region                        = var.env != "prod" ? var.zone : var.region
   cluster                       = "${var.env}-gke"
   cluster_initial_node_count    = var.cluster_initial_node_count
   gke_version                   = var.gke_version
