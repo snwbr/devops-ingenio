@@ -79,7 +79,7 @@ jobs:
       if: github.ref == 'refs/heads/main'
       run: |
         mv index.js index.js.bk
-        sed 's/DEV/PROD/g;w index.js' index.js.bk
+        sed 's/Hello/PROD Environment: Hello/g;w index.js' index.js.bk
         rm index.js.bk
 
     - name: Build and push
