@@ -12,3 +12,17 @@ spec:
       targetPort: {{ .Values.containerPort }}
   selector:
     app: {{ .Values.appName }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.appName }}-temp
+  namespace: {{ .Values.namespace }}-temp
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 60000
+      protocol: TCP
+      targetPort: {{ .Values.containerPort }}
+  selector:
+    app: {{ .Values.appName }}
