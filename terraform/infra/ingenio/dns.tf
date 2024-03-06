@@ -3,7 +3,7 @@ locals {
     {
       type      = "A"
       dns_entry = "${var.env != "dev" ? "" : "${var.env}."}snwbr.net."
-      data      = [google_compute_address.address.address]
+      data      = [google_compute_global_address.address.address]
       ttl       = 300
     },
     {
