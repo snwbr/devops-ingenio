@@ -11,7 +11,8 @@ if [[ ! -z "$KUBECONFIG" ]]; then
 fi
 
 zone="${ZONE}" # us-central1-c
-local_port="${PORT}" # us-central1-c
+region="${REGION}" # us-central1
+local_port="${PORT}"
 
 server=$(kubectl config view --minify | grep server | awk '{print $2}')
 local_tunnel_url="https://kubernetes.default:${local_port}"
@@ -21,7 +22,7 @@ if [ -n "${zone}" ]
 then
   server_ip=$(gcloud container clusters describe ${cluster_name} --format="value(endpoint)" --zone $zone)
 else
-  server_ip=$(gcloud container clusters describe ${cluster_name} --format="value(endpoint)")
+  server_ip=$(gcloud container clusters describe ${cluster_name} --format="value(endpoint)" --region $region)
 fi
 node_info=$(gcloud compute instances list | grep $cluster_name | head -n 1)
 tunnel_node=$(echo "${node_info}" | awk '{print $1}')
