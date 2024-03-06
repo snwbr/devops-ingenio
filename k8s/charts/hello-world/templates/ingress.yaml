@@ -18,7 +18,7 @@ metadata:
     kubernetes.io/ingress.class: gce
     kubernetes.io/ingress.allow-http: "true"
     kubernetes.io/ingress.global-static-ip-name: {{ .Values.env }}-ingress-lb
-    cert-manager.io/cluster-issuer: ingress-staging
+    cert-manager.io/cluster-issuer: ingress
     acme.cert-manager.io/http01-edit-in-place: "true"
 spec:
   defaultBackend:
