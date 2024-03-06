@@ -56,3 +56,39 @@ spec:
     #       serviceAccountSecretRef:
     #         name: clouddns-dns01-solver-svc-acct
     #         key: key.json
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: challenge
+  namespace: cert-manager
+spec:
+  acme:
+    email: oso12_90@hotmail.com
+    server: https://acme-v02.api.letsencrypt.org/directory
+    #disableAccountKeyGeneration: true
+    privateKeySecretRef:
+      name: lets-encrypt-private-key
+      key: private-key
+    solvers:
+    - http01:
+        ingress:
+          name: hello-world
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: challenge-staging
+  namespace: cert-manager
+spec:
+  acme:
+    email: oso12_90@hotmail.com
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    #disableAccountKeyGeneration: true
+    privateKeySecretRef:
+      name: lets-encrypt-private-key-staging
+      key: private-key
+    solvers:
+    - http01:
+        ingress:
+          name: hello-world
