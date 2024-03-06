@@ -60,7 +60,10 @@ jobs:
 
     - name: Customizing image for DEV
       if: github.ref == 'refs/heads/develop'
-      run: "sed 's/Hello/DEV Environment: Hello/g;w index.js' index.js"
+      run: |
+        mv index.js index.js.bk
+        sed 's/Hello/DEV Environment: Hello/g;w index.js' index.js.bk
+        rm index.js.bk
 
     - name: Build and push
       if: github.ref == 'refs/heads/develop'
@@ -74,7 +77,10 @@ jobs:
     
     - name: Customizing image for PROD
       if: github.ref == 'refs/heads/main'
-      run: "sed 's/DEV/PROD/g;w index.js' index.js"
+      run: |
+        mv index.js index.js.bk
+        sed 's/DEV/PROD/g;w index.js' index.js.bk
+        rm index.js.bk
 
     - name: Build and push
       if: github.ref == 'refs/heads/main'
