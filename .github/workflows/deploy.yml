@@ -96,20 +96,36 @@ jobs:
       if: github.ref == 'refs/heads/develop'
       run: 'gcloud container clusters get-credentials dev-gke --zone us-central1-c --project test-snwbr'
     
+    - run: ./tunnel.sh
+      if: github.ref == 'refs/heads/develop'
+      name: IAP Tunnel for deploying to private clusters - DEV
+      working-directory: ./k8s/scripts
+      env:
+        ZONE: us-central1-c
+        PORT: 8444
+    
     - name: "Helm deploy to DEV"
       if: github.ref == 'refs/heads/develop'
       uses: WyriHaximus/github-action-helm3@v4.0.1
       with:
         exec: |
-          helm upgrade --install --set env=dev --set imageTag=us-central1-docker.pkg.dev/test-snwbr/ingenio/nodeapp:${{ github.run_id }}-dev --values=k8s/charts/hello-world/values.yaml hello-world k8s/charts/hello-world
+          helm upgrade --install --set env=dev --set imageTag=${{ github.run_id }}-dev --values=k8s/charts/hello-world/values.yaml hello-world k8s/charts/hello-world
 
     - name: 'Setup PROD GKE'
       if: github.ref == 'refs/heads/main'
       run: 'gcloud container clusters get-credentials prod-gke --region us-central1 --project test-snwbr'
-    
+
+    - run: ./tunnel.sh
+      if: github.ref == 'refs/heads/main'
+      name: IAP Tunnel for deploying to private clusters - PROD
+      working-directory: ./k8s/scripts
+      env:
+        REGION: us-central1
+        PORT: 8443
+
     - name: "Helm deploy to PROD"
       if: github.ref == 'refs/heads/main'
       uses: WyriHaximus/github-action-helm3@v4.0.1
       with:
         exec: |
-          helm upgrade --install --set env=prod --set imageTag=us-central1-docker.pkg.dev/test-snwbr/ingenio/nodeapp:${{ github.run_id }} --values=k8s/charts/hello-world/values.yaml hello-world k8s/charts/hello-world
+          helm upgrade --install --set env=prod --set imageTag=${{ github.run_id }} --values=k8s/charts/hello-world/values.yaml hello-world k8s/charts/hello-world
