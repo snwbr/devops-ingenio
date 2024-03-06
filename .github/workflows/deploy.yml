@@ -97,6 +97,7 @@ jobs:
       run: 'gcloud container clusters get-credentials dev-gke --zone us-central1-c --project test-snwbr'
     
     - run: ./tunnel.sh
+      if: github.ref == 'refs/heads/develop'
       name: IAP Tunnel for deploying to private clusters - DEV
       working-directory: ./k8s/scripts
       env:
@@ -115,6 +116,7 @@ jobs:
       run: 'gcloud container clusters get-credentials prod-gke --region us-central1 --project test-snwbr'
 
     - run: ./tunnel.sh
+      if: github.ref == 'refs/heads/main'
       name: IAP Tunnel for deploying to private clusters - PROD
       working-directory: ./k8s/scripts
       env:
