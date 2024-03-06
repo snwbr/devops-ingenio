@@ -27,7 +27,7 @@ gcloud config set project test-snwbr
 gcloud config set compute/region us-central1
 
 ## Get the GKE credentials. Modify the cluster name (dev-gke), region and project as needed.
-gcloud container clusters get-credentials dev-gke --region us-central1 --project test-snwbr
+gcloud container clusters get-credentials dev-gke --zone us-central1-c --project test-snwbr
 
 ## Now you can run the tunnel script
 ./scripts/tunnel.sh
